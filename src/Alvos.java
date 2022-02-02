@@ -1,21 +1,22 @@
-import java.security.Timestamp;
-
 public class Alvos extends Thread {
 
     private static long totalAlvos = 0;
     private long id;
-    private int[] pontoOrigem;
-    private int[] pontoDestino;
-    private int[] localizacaoAtualizada;
+    private Pontos pontoOrigem;
+    private Pontos pontoDestino;
+    private Pontos localizacaoAtualizada;
     private long timestamp;
-    private long freqAtualizarPosicao;
+    private int freqAtualizarPosicao = 30;
     private boolean chegouDestino;
     private boolean atingido;
 
-    public Alvos() {
+    public Alvos(Pontos pontoOrigem, Pontos pontoDestino) {
         Alvos.totalAlvos++;
         this.id = Alvos.totalAlvos;
         this.timestamp = System.currentTimeMillis();
+        this.pontoOrigem = pontoOrigem;
+        this.pontoDestino = pontoDestino;
+        this.localizacaoAtualizada = pontoOrigem;
         start();
     }
 
@@ -23,11 +24,11 @@ public class Alvos extends Thread {
         return this.id;
     }
 
-    public int[] getPontoOrigem() {
+    public Pontos getPontoOrigem() {
         return this.pontoOrigem;
     }
 
-    public int[] getPontoDestino() {
+    public Pontos getPontoDestino() {
         return this.pontoDestino;
     }
 
@@ -35,11 +36,35 @@ public class Alvos extends Thread {
         return this.timestamp;
     }
 
-    public void run() {
-        try {
+    public Pontos getLocalizacao() {
+        return this.localizacaoAtualizada;
+    }
 
-        } catch (Exception e) {
-            // TODO: handle exception
+    public int getFreq() {
+        return this.freqAtualizarPosicao;
+    }
+
+    public void setFreq(int freqAtualizarPosicao) {
+        this.freqAtualizarPosicao = freqAtualizarPosicao;
+    }
+
+    public void moveAlvo() {
+        if (this.getLocalizacao().getY() > getPontoDestino().getY()) {
+            this.getLocalizacao().setY(0);
+        } else {
+            this.getLocalizacao().setY(getLocalizacao().getY() + 2);
+        }
+    }
+
+    public void run() {
+        while (true) {
+            moveAlvo();
+            try {
+                sleep(getFreq());
+            } catch (InterruptedException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
         }
     }
 }
