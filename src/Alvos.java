@@ -6,7 +6,7 @@ public class Alvos extends Thread {
     private Pontos pontoDestino;
     private Pontos localizacaoAtualizada;
     private long timestamp;
-    private int freqAtualizarPosicao = 30;
+    private long freqAtualizarPosicao = 30;
     private boolean chegouDestino;
     private boolean atingido;
 
@@ -40,7 +40,7 @@ public class Alvos extends Thread {
         return this.localizacaoAtualizada;
     }
 
-    public int getFreq() {
+    public long getFreq() {
         return this.freqAtualizarPosicao;
     }
 
@@ -62,7 +62,6 @@ public class Alvos extends Thread {
             try {
                 sleep(getFreq());
             } catch (InterruptedException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
         }
