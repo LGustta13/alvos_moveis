@@ -1,5 +1,7 @@
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 
@@ -11,12 +13,11 @@ public class Interface extends JFrame {
     private int janelaW = 600;
     private int janelaH = 600;
 
-    // Coordenadas do alvo
-    int xBola = 50;
-    int yBola = 30;
+    private Alvos alvo1 = new Alvos(new Pontos(70, 0), new Pontos(70, 600));
+    private Alvos alvo2 = new Alvos(new Pontos(505, 0), new Pontos(505, 600));
 
     public void atualizar() {
-        moveAlvo();
+
     }
 
     public void desenharGraficos() {
@@ -28,7 +29,8 @@ public class Interface extends JFrame {
 
         // Desenhando o alvo
         bbg.setColor(Color.RED);
-        bbg.fillOval(xBola, yBola, 25, 25);
+        bbg.fillOval(alvo1.getLocalizacao().getX(), alvo1.getLocalizacao().getY(), 25, 25);
+        bbg.fillOval(alvo2.getLocalizacao().getX(), alvo2.getLocalizacao().getY(), 25, 25);
 
         g.drawImage(backBuffer, 0, 0, this);
     }
@@ -41,14 +43,6 @@ public class Interface extends JFrame {
         setLayout(null);
         setVisible(true);
         backBuffer = new BufferedImage(janelaW, janelaH, BufferedImage.TYPE_INT_RGB); // Janela do Windows
-    }
-
-    public void moveAlvo() {
-        if (this.yBola > 600) {
-            this.yBola = 0;
-        } else {
-            this.yBola += 2;
-        }
     }
 
     public void run() {
