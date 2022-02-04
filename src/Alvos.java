@@ -40,6 +40,11 @@ public class Alvos extends Thread {
         return this.localizacaoAtualizada;
     }
 
+    public void setLocalizacao(int x, int y) {
+        this.localizacaoAtualizada.setX(x);
+        this.localizacaoAtualizada.setY(y);
+    }
+
     public long getFreq() {
         return this.freqAtualizarPosicao;
     }

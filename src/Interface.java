@@ -1,5 +1,6 @@
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.util.Random;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
@@ -32,6 +33,10 @@ public class Interface extends JFrame {
         bbg.setColor(Color.RED);
         bbg.fillOval(alvo1.getLocalizacao().getX(), alvo1.getLocalizacao().getY(), 25, 25);
         bbg.fillOval(alvo2.getLocalizacao().getX(), alvo2.getLocalizacao().getY(), 25, 25);
+
+        // Desenhando o alvo
+        bbg.setColor(Color.YELLOW);
+        bbg.fillOval(lancador.getTiro().getLocalizacao().getX(), lancador.getTiro().getLocalizacao().getY(), 15, 15);
 
         // Desenhando o lançador
         bbg.drawImage(nave.getImage(), 287, 550, 50, 50, this);

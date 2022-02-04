@@ -4,20 +4,29 @@ public class Lancador extends Thread {
     private float atuacao = 180;
     private Tiros tiro;
 
-    public Lancador() {
-        start();
-    }
-
     public Lancador(Pontos posicao) {
         this.posicao = posicao;
+        this.tiro = new Tiros();
+        start();
     }
 
     public Pontos getPosicao() {
         return this.posicao;
     }
 
-    public void run() {
+    public Tiros getTiro() {
+        return this.tiro;
+    }
 
+    public void run() {
+        while (true) {
+            this.tiro.moveTiro();
+            try {
+                sleep(this.tiro.getFreq());
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
 }
