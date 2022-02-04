@@ -13,6 +13,7 @@ public class Interface extends JFrame {
     private int FPS = 30;
     private int janelaW = 600, janelaH = 600;
     private boolean esq = false, dir = false;
+    private boolean colidiu = false;
 
     private Alvos alvo1;
     private Alvos alvo2;
@@ -33,9 +34,9 @@ public class Interface extends JFrame {
         bbg.setColor(Color.RED);
 
         if (esq == false) {
-            alvo1 = new Alvos(new Pontos(70, 0), new Pontos(70, 600));
+            alvo1 = new Alvos(new Pontos(70, 60), new Pontos(70, 600));
             esq = true;
-        } else if (alvo1.getChegouDestino()) {
+        } else if (alvo1.getChegouDestino() || colidiu) {
             esq = false;
         }
 
@@ -51,13 +52,38 @@ public class Interface extends JFrame {
 
         // Desenhando o tiro
         bbg.setColor(Color.YELLOW);
-        // bbg.fillOval(lancador.getTiro().getLocalizacao().getX(),
-        // lancador.getTiro().getLocalizacao().getY(), 15, 15);
+        bbg.fillOval(lancador.getTiro().getLocalizacao().getX(), lancador.getTiro().getLocalizacao().getY(), 15, 15);
+
+        colidiu = colisao(alvo1.getLocalizacao().getX(), alvo1.getLocalizacao().getY(), 25, 25,
+                lancador.getTiro().getLocalizacao().getX(), lancador.getTiro().getLocalizacao().getY(), 15, 15);
+
+        if (colidiu) {
+            alvo1.setAtingido(colidiu);
+        }
 
         // Desenhando o lançador
         bbg.drawImage(nave.getImage(), 287, 550, 50, 50, this);
 
         g.drawImage(backBuffer, 0, 0, this);
+    }
+
+    public boolean colisao(int obj1X, int obj1Y, int obj1W, int obj1H,
+            int obj2X, int obj2Y, int obj2W, int obj2H) {
+        if ((obj1X >= obj2X && obj1X <= obj2X + obj2W)
+                && (obj1Y >= obj2Y && obj1Y <= obj2Y + obj2H)) {
+            return true;
+        } else if ((obj1X + obj1W >= obj2X && obj1X + obj1W <= obj2X + obj2W)
+                && (obj1Y >= obj2Y && obj1Y <= obj2Y + obj2H)) {
+            return true;
+        } else if ((obj1X >= obj2X && obj1X <= obj2X + obj2W)
+                && (obj1Y + obj1H >= obj2Y && obj1Y + obj1H <= obj2Y + obj2H)) {
+            return true;
+        } else if ((obj1X + obj1W >= obj2X && obj1X + obj1W <= obj2X + obj2W)
+                && (obj1Y + obj1H >= obj2Y && obj1Y + obj1H <= obj2Y + obj2H)) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public void inicializar() {

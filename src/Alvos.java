@@ -8,7 +8,7 @@ public class Alvos extends Thread {
     private long timestamp;
     private long freqAtualizarPosicao = 30;
     private boolean chegouDestino;
-    // private boolean atingido;
+    private boolean atingido;
 
     public Alvos(Pontos pontoOrigem, Pontos pontoDestino) {
         Alvos.totalAlvos++;
@@ -18,6 +18,7 @@ public class Alvos extends Thread {
         this.pontoDestino = pontoDestino;
         this.localizacaoAtualizada = pontoOrigem;
         this.chegouDestino = false;
+        this.atingido = false;
         start();
     }
 
@@ -53,6 +54,10 @@ public class Alvos extends Thread {
         this.freqAtualizarPosicao = freqAtualizarPosicao;
     }
 
+    public void setAtingido(boolean atingiu) {
+        this.atingido = atingiu;
+    }
+
     public void moveAlvo() {
         if (this.getLocalizacao().getY() > getPontoDestino().getY()) {
             this.chegouDestino = true;
@@ -64,7 +69,7 @@ public class Alvos extends Thread {
     public void run() {
         while (true) {
             moveAlvo();
-            if (chegouDestino) {
+            if (chegouDestino || atingido) {
                 break;
             }
             try {

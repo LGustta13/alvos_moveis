@@ -1,6 +1,7 @@
 public class Lancador extends Thread {
 
     private Pontos posicao;
+    private Tiros tiro = new Tiros();
 
     public Lancador(Pontos posicao) {
         this.posicao = posicao;
@@ -11,10 +12,12 @@ public class Lancador extends Thread {
         return this.posicao;
     }
 
-    public void run() {
-        while (true) {
+    public Tiros getTiro() {
+        return this.tiro;
+    }
 
-        }
+    public void run() {
+        tiro.start();
     }
 
 }
