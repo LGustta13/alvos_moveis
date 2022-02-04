@@ -11,14 +11,15 @@ public class Tiros extends Thread {
     private long timestamp;
     private long freqAtualizarPosicao = 30;
     private boolean contatoAlvo;
-    private int angle = 170;// new Random().nextInt(180);
+    private int angulo;
 
-    public Tiros() {
+    public Tiros(double id, Pontos origemAlvo, Pontos destinoAlvo, long timeAlvo) {
         Tiros.totalTiros++;
         this.id = Tiros.totalTiros;
         this.timestamp = System.currentTimeMillis();
-        this.pontoOrigem = new Pontos(300, 300);
+        this.pontoOrigem = new Pontos(595, 300);
         this.localizacaoAtualizada = pontoOrigem;
+        calcularAngulo(id, origemAlvo, destinoAlvo, timeAlvo);
     }
 
     public Pontos getLocalizacao() {
@@ -37,10 +38,17 @@ public class Tiros extends Thread {
         this.freqAtualizarPosicao = freqAtualizarPosicao;
     }
 
+    public void calcularAngulo(double id, Pontos origemAlvo, Pontos destinoAlvo, long timeAlvo) {
+
+        // private int angle = 170;// new Random().nextInt(180);
+
+        this.angulo = angulo;
+    }
+
     public void moveTiro() {
 
-        double dx = Math.cos(Math.toRadians(this.angle));
-        double dy = Math.sin(Math.toRadians(this.angle));
+        double dx = Math.cos(Math.toRadians(this.angulo));
+        double dy = Math.sin(Math.toRadians(this.angulo));
 
         if (getLocalizacao().getY() < 0 || getLocalizacao().getX() < 0 || getLocalizacao().getX() > 600) {
             getLocalizacao().setX(300);

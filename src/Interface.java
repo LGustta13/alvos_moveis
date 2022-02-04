@@ -11,12 +11,12 @@ public class Interface extends JFrame {
     private ImageIcon fundo = new ImageIcon("./images/fundo.png");
     private ImageIcon nave = new ImageIcon("./images/space.png");
     private int FPS = 30;
-    private int janelaW = 600;
-    private int janelaH = 600;
+    private int janelaW = 600, janelaH = 600;
+    private boolean esq = false, dir = false;
 
-    private Alvos alvo1 = new Alvos(new Pontos(70, 0), new Pontos(70, 600));
-    private Alvos alvo2 = new Alvos(new Pontos(505, 0), new Pontos(505, 600));
-    private Lancador lancador = new Lancador(new Pontos(288, 575));
+    private Alvos alvo1;
+    private Alvos alvo2;
+    private Lancador lancador = new Lancador(new Pontos(284, 575));
 
     public void atualizar() {
 
@@ -31,12 +31,28 @@ public class Interface extends JFrame {
 
         // Desenhando o alvo
         bbg.setColor(Color.RED);
+
+        if (esq == false) {
+            alvo1 = new Alvos(new Pontos(70, 0), new Pontos(70, 600));
+            esq = true;
+        } else if (alvo1.getChegouDestino()) {
+            esq = false;
+        }
+
+        if (dir == false) {
+            alvo2 = new Alvos(new Pontos(505, 0), new Pontos(505, 600));
+            dir = true;
+        } else if (alvo2.getChegouDestino()) {
+            dir = false;
+        }
+
         bbg.fillOval(alvo1.getLocalizacao().getX(), alvo1.getLocalizacao().getY(), 25, 25);
         bbg.fillOval(alvo2.getLocalizacao().getX(), alvo2.getLocalizacao().getY(), 25, 25);
 
-        // Desenhando o alvo
+        // Desenhando o tiro
         bbg.setColor(Color.YELLOW);
-        bbg.fillOval(lancador.getTiro().getLocalizacao().getX(), lancador.getTiro().getLocalizacao().getY(), 15, 15);
+        // bbg.fillOval(lancador.getTiro().getLocalizacao().getX(),
+        // lancador.getTiro().getLocalizacao().getY(), 15, 15);
 
         // Desenhando o lançador
         bbg.drawImage(nave.getImage(), 287, 550, 50, 50, this);
