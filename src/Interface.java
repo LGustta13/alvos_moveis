@@ -50,16 +50,19 @@ public class Interface extends JFrame {
         bbg.fillOval(alvo1.getLocalizacao().getX(), alvo1.getLocalizacao().getY(), 25, 25);
         bbg.fillOval(alvo2.getLocalizacao().getX(), alvo2.getLocalizacao().getY(), 25, 25);
 
-        // Desenhando o tiro
-        bbg.setColor(Color.YELLOW);
-        bbg.fillOval(lancador.getTiro().getLocalizacao().getX(), lancador.getTiro().getLocalizacao().getY(), 15, 15);
-
-        colidiu = colisao(alvo1.getLocalizacao().getX(), alvo1.getLocalizacao().getY(), 25, 25,
-                lancador.getTiro().getLocalizacao().getX(), lancador.getTiro().getLocalizacao().getY(), 15, 15);
+        colidiu = colisao(alvo1.getLocalizacao().getX(), alvo1.getLocalizacao().getY(), 40, 40,
+                lancador.getTiro().getLocalizacao().getX(), lancador.getTiro().getLocalizacao().getY(), 30, 30);
 
         if (colidiu) {
-            alvo1.setAtingido(colidiu);
+            alvo1.setAtingido(true);
+            lancador.getTiro().setContatoAlvo(true);
         }
+
+        // Desenhando o tiro
+        bbg.setColor(Color.YELLOW);
+
+        bbg.fillOval(lancador.getTiro().getLocalizacao().getX(), lancador.getTiro().getLocalizacao().getY(), 15,
+                15);
 
         // Desenhando o lançador
         bbg.drawImage(nave.getImage(), 287, 550, 50, 50, this);

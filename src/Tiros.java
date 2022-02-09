@@ -10,7 +10,7 @@ public class Tiros extends Thread {
     private Pontos localizacaoAtualizada;
     private long timestamp;
     private long freqAtualizarPosicao = 30;
-    private boolean contatoAlvo;
+    private boolean contatoAlvo = false;
     private int angulo = 55;
 
     // double id, Pontos origemAlvo, Pontos destinoAlvo, long timeAlvo
@@ -35,8 +35,16 @@ public class Tiros extends Thread {
         return this.freqAtualizarPosicao;
     }
 
+    public boolean getContatoAlvo() {
+        return this.contatoAlvo;
+    }
+
     public void setFreq(int freqAtualizarPosicao) {
         this.freqAtualizarPosicao = freqAtualizarPosicao;
+    }
+
+    public void setContatoAlvo(boolean contato) {
+        this.contatoAlvo = contato;
     }
 
     // public void calcularAngulo(double id, Pontos origemAlvo, Pontos destinoAlvo,
@@ -53,8 +61,8 @@ public class Tiros extends Thread {
         double dy = Math.sin(Math.toRadians(this.angulo));
 
         if (getLocalizacao().getY() < 0 || getLocalizacao().getX() < 0 || getLocalizacao().getX() > 600) {
-            getLocalizacao().setX(300);
-            getLocalizacao().setY(300);
+            getLocalizacao().setX(305);
+            getLocalizacao().setY(530);
 
         } else {
             getLocalizacao().setX((int) (getLocalizacao().getX() - dx * 2));
@@ -65,6 +73,11 @@ public class Tiros extends Thread {
     public void run() {
         while (true) {
             moveTiro();
+            System.out.println(getLocalizacao().getX());
+            if (contatoAlvo) {
+                break;
+            }
+
             try {
                 sleep(getFreq());
             } catch (InterruptedException e) {
