@@ -6,7 +6,7 @@ public class Alvos extends Thread {
     private Pontos pontoDestino;
     private Pontos localizacaoAtualizada;
     private long timestamp;
-    private long freqAtualizarPosicao = 30;
+    private long freqAtualizarPosicao;
     private boolean chegouDestino;
     private boolean atingido;
 
@@ -17,8 +17,7 @@ public class Alvos extends Thread {
         this.pontoOrigem = pontoOrigem;
         this.pontoDestino = pontoDestino;
         this.localizacaoAtualizada = pontoOrigem;
-        this.chegouDestino = false;
-        this.atingido = false;
+        this.freqAtualizarPosicao = 30;
         start();
     }
 
@@ -46,12 +45,16 @@ public class Alvos extends Thread {
         return this.freqAtualizarPosicao;
     }
 
+    public void setFreq(int freqAtualizarPosicao) {
+        this.freqAtualizarPosicao = freqAtualizarPosicao;
+    }
+
     public boolean getChegouDestino() {
         return this.chegouDestino;
     }
 
-    public void setFreq(int freqAtualizarPosicao) {
-        this.freqAtualizarPosicao = freqAtualizarPosicao;
+    public boolean getAtingido() {
+        return this.atingido;
     }
 
     public void setAtingido(boolean atingiu) {
@@ -59,7 +62,7 @@ public class Alvos extends Thread {
     }
 
     public void moveAlvo() {
-        if (this.getLocalizacao().getY() > getPontoDestino().getY()) {
+        if (this.getLocalizacao().getY() >= getPontoDestino().getY()) {
             this.chegouDestino = true;
         } else {
             this.getLocalizacao().setY(getLocalizacao().getY() + 2);
@@ -68,12 +71,12 @@ public class Alvos extends Thread {
 
     public void run() {
         while (true) {
-            moveAlvo();
-            if (chegouDestino || atingido) {
-                break;
-            }
             try {
                 sleep(getFreq());
+                moveAlvo();
+                if (chegouDestino || atingido) {
+                    break;
+                }
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

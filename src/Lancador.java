@@ -11,9 +11,9 @@ public class Lancador extends Thread {
     public Lancador(Pontos posicao) {
         this.posicao = posicao;
         this.semaforo = new Semaphore(1);
-        this.carregador.add(new Municao());
-        this.carregador.add(new Municao());
-        this.carregador.add(new Municao());
+        // this.carregador.add(new Municao());
+        // this.carregador.add(new Municao());
+        // this.carregador.add(new Municao());
         start();
     }
 
@@ -27,7 +27,7 @@ public class Lancador extends Thread {
 
     public void carregar() {
         if (carregador.empty()) {
-
+            System.out.println("Carregador vazio");
         }
 
     }
@@ -47,7 +47,7 @@ public class Lancador extends Thread {
     public void run() {
         try {
             semaforo.acquire();
-            carregar();
+            // carregar();
             preparar();
             atirar();
         } catch (InterruptedException e) {

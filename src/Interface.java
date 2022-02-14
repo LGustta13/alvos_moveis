@@ -1,6 +1,8 @@
+
+// Bibliotecas para gerar os gráficos do jogo
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.util.Random;
+import java.util.ArrayList;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
@@ -8,16 +10,23 @@ import javax.swing.JFrame;
 public class Interface extends JFrame {
 
     private BufferedImage backBuffer;
+
+    // Icone das imagens no jogo
     private ImageIcon fundo = new ImageIcon("./images/fundo.png");
     private ImageIcon nave = new ImageIcon("./images/space.png");
+    private ImageIcon nuvem = new ImageIcon("./images/nuvens.png");
+    private ImageIcon meteoro = new ImageIcon("./images/meteoro.png");
+
+    // Definição de algumas características de renderização e tamanho da janela do
+    // jogo
     private int FPS = 30;
     private int janelaW = 600, janelaH = 600;
-    private boolean esq = false, dir = false;
-    private boolean colidiu = false;
 
-    private Alvos alvo1;
-    private Alvos alvo2;
-    private Lancador lancador = new Lancador(new Pontos(284, 575));
+    // Objetos que serão inseridos inicialmente no jogo
+    private ArrayList<Alvos> alvosDir = new ArrayList<Alvos>();
+    private ArrayList<Alvos> alvosEsq = new ArrayList<Alvos>();
+    private boolean colidiu;
+    private Lancador lancador;
 
     public void atualizar() {
 
@@ -30,32 +39,47 @@ public class Interface extends JFrame {
         // Desenhando a imagem de fundo
         bbg.drawImage(fundo.getImage(), 0, 0, 600, 600, this);
 
-        // Desenhando o alvo
-        bbg.setColor(Color.RED);
+        // Desenhando a nuvem
+        bbg.drawImage(nuvem.getImage(), 50, 100, 500, 271, this);
 
-        if (esq == false) {
-            alvo1 = new Alvos(new Pontos(70, 60), new Pontos(70, 600));
-            esq = true;
-        } else if (alvo1.getChegouDestino() || colidiu) {
-            esq = false;
+        // Desenhando o alvo, checando se há alvos na tela
+        if (alvosEsq.isEmpty()) {
+            alvosEsq.add(new Alvos(new Pontos(60, 0), new Pontos(60, 600)));
+            System.out.println(1);
         }
 
-        if (dir == false) {
-            alvo2 = new Alvos(new Pontos(505, 0), new Pontos(505, 600));
-            dir = true;
-        } else if (alvo2.getChegouDestino()) {
-            dir = false;
+        if (alvosDir.isEmpty()) {
+            alvosDir.add(new Alvos(new Pontos(490, 0), new Pontos(490, 600)));
         }
 
-        bbg.fillOval(alvo1.getLocalizacao().getX(), alvo1.getLocalizacao().getY(), 25, 25);
-        bbg.fillOval(alvo2.getLocalizacao().getX(), alvo2.getLocalizacao().getY(), 25, 25);
+        for (int i = 0; i < alvosDir.size(); i++) {
+            bbg.drawImage(meteoro.getImage(), alvosDir.get(i).getLocalizacao().getX(),
+                    alvosDir.get(i).getLocalizacao().getY(), 50, 50, this);
 
-        colidiu = colisao(alvo1.getLocalizacao().getX(), alvo1.getLocalizacao().getY(), 40, 40,
-                lancador.getTiro().getLocalizacao().getX(), lancador.getTiro().getLocalizacao().getY(), 30, 30);
+            colidiu = colisao(alvosDir.get(i).getLocalizacao().getX(), alvosDir.get(i).getLocalizacao().getY(), 50, 50,
+                    lancador.getTiro().getLocalizacao().getX(), lancador.getTiro().getLocalizacao().getY(), 50, 50);
 
-        if (colidiu) {
-            alvo1.setAtingido(true);
-            lancador.getTiro().setContatoAlvo(true);
+            if (alvosDir.get(i).getChegouDestino() || colidiu) {
+                alvosDir.get(i).setAtingido(colidiu);
+                lancador.getTiro().setContatoAlvo(colidiu);
+                alvosDir.remove(i);
+                i--;
+            }
+        }
+
+        for (int i = 0; i < alvosEsq.size(); i++) {
+            bbg.drawImage(meteoro.getImage(), alvosEsq.get(i).getLocalizacao().getX(),
+                    alvosEsq.get(i).getLocalizacao().getY(), 50, 50, this);
+
+            colidiu = colisao(alvosEsq.get(i).getLocalizacao().getX(), alvosEsq.get(i).getLocalizacao().getY(), 50, 50,
+                    lancador.getTiro().getLocalizacao().getX(), lancador.getTiro().getLocalizacao().getY(), 50, 50);
+
+            if (alvosEsq.get(i).getChegouDestino() || colidiu) {
+                alvosEsq.get(i).setAtingido(colidiu);
+                lancador.getTiro().setContatoAlvo(colidiu);
+                alvosEsq.remove(i);
+                i--;
+            }
         }
 
         // Desenhando o tiro
@@ -65,7 +89,7 @@ public class Interface extends JFrame {
                 15);
 
         // Desenhando o lançador
-        bbg.drawImage(nave.getImage(), 287, 550, 50, 50, this);
+        bbg.drawImage(nave.getImage(), 287, 540, 50, 50, this);
 
         g.drawImage(backBuffer, 0, 0, this);
     }
@@ -90,6 +114,10 @@ public class Interface extends JFrame {
     }
 
     public void inicializar() {
+        lancador = new Lancador(new Pontos(284, 575));
+        alvosEsq.add(new Alvos(new Pontos(60, 0), new Pontos(60, 600)));
+        alvosDir.add(new Alvos(new Pontos(490, 0), new Pontos(490, 600)));
+
         setTitle("Alvos móveis");
         setSize(janelaW, janelaH);
         setResizable(false);

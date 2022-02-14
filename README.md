@@ -28,3 +28,4 @@ The `JAVA PROJECTS` view allows you to manage your dependencies. More details ca
 
 - Movimento da nuvem
 - Calcular o ângulo de disparo
+- Parei nas condições para gerar os alvos a cada 100 milissegundos em Interface.java, linha 47
