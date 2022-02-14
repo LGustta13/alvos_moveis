@@ -4,12 +4,15 @@ import java.util.concurrent.Semaphore;
 public class Lancador extends Thread {
 
     private Pontos posicao;
-    private Tiros tiro = new Tiros();;
+    private Tiros tiro;
     private Stack<Municao> carregador;
+    private Alvos alvo;
     private Semaphore semaforo;
 
-    public Lancador(Pontos posicao) {
+    public Lancador(Pontos posicao, Alvos alvo) {
         this.posicao = posicao;
+        this.alvo = alvo;
+        this.tiro = new Tiros();
         this.semaforo = new Semaphore(1);
         // this.carregador.add(new Municao());
         // this.carregador.add(new Municao());
@@ -25,10 +28,21 @@ public class Lancador extends Thread {
         return this.tiro;
     }
 
+    public Alvos getAlvo() {
+        return this.alvo;
+    }
+
+    public void setAlvo(Alvos alvo) {
+        this.alvo = alvo;
+    }
+
     public void carregar() {
-        if (carregador.empty()) {
-            System.out.println("Carregador vazio");
-        }
+
+        tiro.calcularDestino(this.alvo.getPontoOrigem(), this.alvo.getPontoDestino(), this.alvo.getTimestamp());
+
+        // if (carregador.empty()) {
+        // System.out.println("Carregador vazio");
+        // }
 
     }
 
@@ -45,9 +59,10 @@ public class Lancador extends Thread {
     }
 
     public void run() {
+
         try {
-            semaforo.acquire();
-            // carregar();
+            semaforo.acquire(1);
+            carregar();
             preparar();
             atirar();
         } catch (InterruptedException e) {
@@ -57,14 +72,13 @@ public class Lancador extends Thread {
             semaforo.release();
         }
 
-        while (true) {
-            if (this.tiro.getContatoAlvo() == true) {
-                tiro = new Tiros();
-                tiro.start();
-                System.out.println(1);
-            }
+        // while (true) {
+        // if (this.tiro.getContatoAlvo() == true) {
+        // tiro = new Tiros();
+        // tiro.start();
+        // }
 
-        }
+        // }
 
     }
 

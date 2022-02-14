@@ -10,8 +10,8 @@ public class Tiros extends Thread {
     private Pontos localizacaoAtualizada;
     private long timestamp;
     private long freqAtualizarPosicao = 30;
-    private boolean contatoAlvo = false;
-    private int angulo = 55;
+    private boolean contatoAlvo;
+    private double cateto1, cateto2;
 
     // double id, Pontos origemAlvo, Pontos destinoAlvo, long timeAlvo
     public Tiros() {
@@ -20,7 +20,6 @@ public class Tiros extends Thread {
         this.timestamp = System.currentTimeMillis();
         this.pontoOrigem = new Pontos(305, 530);
         this.localizacaoAtualizada = pontoOrigem;
-        // calcularAngulo(id, origemAlvo, destinoAlvo, timeAlvo);
     }
 
     public Pontos getLocalizacao() {
@@ -47,33 +46,48 @@ public class Tiros extends Thread {
         this.contatoAlvo = contato;
     }
 
-    // public void calcularAngulo(double id, Pontos origemAlvo, Pontos destinoAlvo,
-    // long timeAlvo) {
+    public void calcularDestino(Pontos origemAlvo, Pontos destinoAlvo, long timeAlvo) {
 
-    // // private int angle = 170;// new Random().nextInt(180);
+        long tempo = System.currentTimeMillis();
+        tempo = tempo - timeAlvo;
+        int pixels = (int) (tempo / 30) + 10;
+        int ponto = (int) ((600 - pixels) / 2) + pixels;
+        this.pontoDestino = new Pontos(origemAlvo.getX(), ponto);
 
-    // this.angulo = angulo;
-    // }
+    }
 
-    public void moveTiro() {
+    public void calcularCatetos() {
 
-        double dx = Math.cos(Math.toRadians(this.angulo));
-        double dy = Math.sin(Math.toRadians(this.angulo));
+        double adj = pontoOrigem.getX() - pontoDestino.getX();
+        double opo = pontoOrigem.getY() - pontoDestino.getY();
+        double hip = (int) Math.sqrt((Math.pow(adj, 2) + Math.pow(opo, 2)));
 
+        cateto1 = adj / hip;
+        cateto2 = opo / hip;
+    }
+
+    public void mover(double adj, double opo) {
         if (getLocalizacao().getY() < 0 || getLocalizacao().getX() < 0 || getLocalizacao().getX() > 600) {
             getLocalizacao().setX(305);
             getLocalizacao().setY(530);
 
         } else {
-            getLocalizacao().setX((int) (getLocalizacao().getX() - dx * 2));
-            getLocalizacao().setY((int) (getLocalizacao().getY() - dy * 2));
+            getLocalizacao().setX((int) (getLocalizacao().getX() - adj * 2));
+            getLocalizacao().setY((int) (getLocalizacao().getY() - opo * 2));
         }
     }
 
+    // public void moveTiro1() {
+
+    // double dx = Math.cos(Math.toRadians(this.angulo));
+    // double dy = Math.sin(Math.toRadians(this.angulo));
+
+    // }
+
     public void run() {
+        calcularCatetos();
         while (true) {
-            moveTiro();
-            System.out.println(getLocalizacao().getX());
+            mover(cateto1, cateto2);
             if (contatoAlvo) {
                 break;
             }

@@ -45,7 +45,6 @@ public class Interface extends JFrame {
         // Desenhando o alvo, checando se há alvos na tela
         if (alvosEsq.isEmpty()) {
             alvosEsq.add(new Alvos(new Pontos(60, 0), new Pontos(60, 600)));
-            System.out.println(1);
         }
 
         if (alvosDir.isEmpty()) {
@@ -55,6 +54,10 @@ public class Interface extends JFrame {
         for (int i = 0; i < alvosDir.size(); i++) {
             bbg.drawImage(meteoro.getImage(), alvosDir.get(i).getLocalizacao().getX(),
                     alvosDir.get(i).getLocalizacao().getY(), 50, 50, this);
+
+            if (lancador.getAlvo() == null) {
+                lancador.setAlvo(alvosDir.get(i));
+            }
 
             colidiu = colisao(alvosDir.get(i).getLocalizacao().getX(), alvosDir.get(i).getLocalizacao().getY(), 50, 50,
                     lancador.getTiro().getLocalizacao().getX(), lancador.getTiro().getLocalizacao().getY(), 50, 50);
@@ -71,8 +74,12 @@ public class Interface extends JFrame {
             bbg.drawImage(meteoro.getImage(), alvosEsq.get(i).getLocalizacao().getX(),
                     alvosEsq.get(i).getLocalizacao().getY(), 50, 50, this);
 
+            if (lancador.getAlvo() == null) {
+                lancador.setAlvo(alvosEsq.get(i));
+            }
+
             colidiu = colisao(alvosEsq.get(i).getLocalizacao().getX(), alvosEsq.get(i).getLocalizacao().getY(), 50, 50,
-                    lancador.getTiro().getLocalizacao().getX(), lancador.getTiro().getLocalizacao().getY(), 50, 50);
+                    lancador.getTiro().getLocalizacao().getX(), lancador.getTiro().getLocalizacao().getY(), 20, 20);
 
             if (alvosEsq.get(i).getChegouDestino() || colidiu) {
                 alvosEsq.get(i).setAtingido(colidiu);
@@ -114,9 +121,10 @@ public class Interface extends JFrame {
     }
 
     public void inicializar() {
-        lancador = new Lancador(new Pontos(284, 575));
+
         alvosEsq.add(new Alvos(new Pontos(60, 0), new Pontos(60, 600)));
         alvosDir.add(new Alvos(new Pontos(490, 0), new Pontos(490, 600)));
+        lancador = new Lancador(new Pontos(284, 575), alvosEsq.get(0));
 
         setTitle("Alvos móveis");
         setSize(janelaW, janelaH);
