@@ -23,9 +23,3 @@ Meanwhile, the compiled output files will be generated in the `bin` folder by de
 ## Dependency Management
 
 The `JAVA PROJECTS` view allows you to manage your dependencies. More details can be found [here](https://github.com/microsoft/vscode-java-dependency#manage-dependencies).
-
-# À fazer
-
-- Movimento da nuvem
-- Calcular o ângulo de disparo
-- Parei nas condições para gerar os alvos a cada 100 milissegundos em Interface.java, linha 47
