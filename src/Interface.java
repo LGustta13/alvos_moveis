@@ -3,6 +3,9 @@
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.Random;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
@@ -27,6 +30,25 @@ public class Interface extends JFrame {
     private ArrayList<Alvos> alvosEsq = new ArrayList<Alvos>();
     private boolean colidiu;
     private Lancador lancador;
+    private ExecutorService contagem = Executors.newCachedThreadPool();
+
+    // Thread que roda em paralelo com a interface para gerar os alvos
+    Runnable r1 = () -> {
+        while (true) {
+            try {
+                Thread.sleep(new Random().nextInt(3000) + 100);
+                alvosEsq.add(new Alvos(new Pontos(60, 0), new Pontos(60, 600)));
+                Thread.sleep(new Random().nextInt(2000) + 100);
+                alvosDir.add(new Alvos(new Pontos(490, 0), new Pontos(490, 600)));
+                System.out.println(new Random().nextInt(4000) + 1000);
+
+            } catch (InterruptedException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
+
+    };
 
     public void atualizar() {
 
@@ -41,15 +63,6 @@ public class Interface extends JFrame {
 
         // Desenhando a nuvem
         bbg.drawImage(nuvem.getImage(), 50, 100, 500, 271, this);
-
-        // Desenhando o alvo, checando se há alvos na tela
-        if (alvosEsq.isEmpty()) {
-            alvosEsq.add(new Alvos(new Pontos(60, 0), new Pontos(60, 600)));
-        }
-
-        if (alvosDir.isEmpty()) {
-            alvosDir.add(new Alvos(new Pontos(490, 0), new Pontos(490, 600)));
-        }
 
         for (int i = 0; i < alvosDir.size(); i++) {
             bbg.drawImage(meteoro.getImage(), alvosDir.get(i).getLocalizacao().getX(),
@@ -125,6 +138,7 @@ public class Interface extends JFrame {
         alvosEsq.add(new Alvos(new Pontos(60, 0), new Pontos(60, 600)));
         alvosDir.add(new Alvos(new Pontos(490, 0), new Pontos(490, 600)));
         lancador = new Lancador(new Pontos(284, 575), alvosEsq.get(0));
+        contagem.execute(r1);
 
         setTitle("Alvos móveis");
         setSize(janelaW, janelaH);
