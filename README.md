@@ -23,3 +23,11 @@ Meanwhile, the compiled output files will be generated in the `bin` folder by de
 ## Dependency Management
 
 The `JAVA PROJECTS` view allows you to manage your dependencies. More details can be found [here](https://github.com/microsoft/vscode-java-dependency#manage-dependencies).
+
+À fazer:
+
+- Tentando entender porque quando coloco um system para printar o tiro funciona corretamente (em Lançador, run())
+
+- Implementar a ideia de munição e carregador para os tiros (em runnable)
+- Criar várias threads para o lançador e ir decidindo pelo semáforo quem vai primeiro
+- Ainda com problemas no cáulculo da trajetória para alvos no lado direito

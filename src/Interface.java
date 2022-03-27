@@ -36,11 +36,10 @@ public class Interface extends JFrame {
     Runnable r1 = () -> {
         while (true) {
             try {
-                Thread.sleep(new Random().nextInt(3000) + 100);
+                Thread.sleep(new Random().nextInt(2000) + 3000);
                 alvosEsq.add(new Alvos(new Pontos(60, 0), new Pontos(60, 600)));
-                Thread.sleep(new Random().nextInt(2000) + 100);
+                Thread.sleep(new Random().nextInt(2000) + 3000);
                 alvosDir.add(new Alvos(new Pontos(490, 0), new Pontos(490, 600)));
-                System.out.println(new Random().nextInt(4000) + 1000);
 
             } catch (InterruptedException e) {
                 // TODO Auto-generated catch block
@@ -51,7 +50,7 @@ public class Interface extends JFrame {
     };
 
     public void atualizar() {
-
+        System.out.println(lancador.getTiro().getContatoAlvo());
     }
 
     public void desenharGraficos() {
@@ -97,6 +96,7 @@ public class Interface extends JFrame {
             if (alvosEsq.get(i).getChegouDestino() || colidiu) {
                 alvosEsq.get(i).setAtingido(colidiu);
                 lancador.getTiro().setContatoAlvo(colidiu);
+
                 alvosEsq.remove(i);
                 i--;
             }
@@ -137,8 +137,8 @@ public class Interface extends JFrame {
 
         alvosEsq.add(new Alvos(new Pontos(60, 0), new Pontos(60, 600)));
         alvosDir.add(new Alvos(new Pontos(490, 0), new Pontos(490, 600)));
-        lancador = new Lancador(new Pontos(284, 575), alvosEsq.get(0));
         contagem.execute(r1);
+        lancador = new Lancador(new Pontos(284, 575), alvosEsq.get(0));
 
         setTitle("Alvos móveis");
         setSize(janelaW, janelaH);

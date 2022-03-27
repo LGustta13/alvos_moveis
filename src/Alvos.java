@@ -75,6 +75,7 @@ public class Alvos extends Thread {
                 sleep(getFreq());
                 moveAlvo();
                 if (chegouDestino || atingido) {
+                    this.interrupt();
                     break;
                 }
             } catch (InterruptedException e) {

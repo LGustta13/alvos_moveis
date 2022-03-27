@@ -5,7 +5,7 @@ public class Lancador extends Thread {
 
     private Pontos posicao;
     private Tiros tiro;
-    private Stack<Municao> carregador;
+    private Stack<Municao> carregador = new Stack<Municao>();
     private Alvos alvo;
     private Semaphore semaforo;
 
@@ -14,9 +14,11 @@ public class Lancador extends Thread {
         this.alvo = alvo;
         this.tiro = new Tiros();
         this.semaforo = new Semaphore(1);
-        // this.carregador.add(new Municao());
-        // this.carregador.add(new Municao());
-        // this.carregador.add(new Municao());
+        this.carregador.add(new Municao());
+        this.carregador.add(new Municao());
+        this.carregador.add(new Municao());
+        this.carregador.add(new Municao());
+        this.carregador.add(new Municao());
         start();
     }
 
@@ -36,13 +38,23 @@ public class Lancador extends Thread {
         this.alvo = alvo;
     }
 
+    public void calcularDestino(Pontos origemAlvo, Pontos destinoAlvo, long timeAlvo) {
+
+        long tempo = System.currentTimeMillis();
+        tempo = tempo - timeAlvo;
+        int pixels = (int) (tempo / 30) + 10;
+        int ponto = (int) ((600 - pixels) / 2) + pixels;
+        tiro.setPontoDestino(new Pontos(origemAlvo.getX(), ponto));
+
+    }
+
     public void carregar() {
 
-        tiro.calcularDestino(this.alvo.getPontoOrigem(), this.alvo.getPontoDestino(), this.alvo.getTimestamp());
-
-        // if (carregador.empty()) {
-        // System.out.println("Carregador vazio");
-        // }
+        calcularDestino(this.alvo.getPontoOrigem(), this.alvo.getPontoDestino(), this.alvo.getTimestamp());
+        carregador.pop();
+        if (carregador.empty()) {
+            System.out.println("Carregador vazio");
+        }
 
     }
 
@@ -56,20 +68,24 @@ public class Lancador extends Thread {
 
     public void atirar() {
         tiro.start();
+
     }
 
     public void run() {
+        carregar();
+        preparar();
+        atirar();
 
-        try {
-            semaforo.acquire(1);
-            carregar();
-            preparar();
-            atirar();
-        } catch (InterruptedException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } finally {
-            semaforo.release();
+        while (true) {
+            System.out.println(getTiro().getContatoAlvo());
+
+            if (this.tiro.getContatoAlvo()) {
+                System.out.println(1);
+                tiro = new Tiros();
+                carregar();
+                preparar();
+                atirar();
+            }
         }
 
         // while (true) {

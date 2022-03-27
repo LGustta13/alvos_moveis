@@ -38,6 +38,10 @@ public class Tiros extends Thread {
         return this.contatoAlvo;
     }
 
+    public Pontos getPontoOrigem() {
+        return this.pontoOrigem;
+    }
+
     public void setFreq(int freqAtualizarPosicao) {
         this.freqAtualizarPosicao = freqAtualizarPosicao;
     }
@@ -46,30 +50,25 @@ public class Tiros extends Thread {
         this.contatoAlvo = contato;
     }
 
-    public void calcularDestino(Pontos origemAlvo, Pontos destinoAlvo, long timeAlvo) {
-
-        long tempo = System.currentTimeMillis();
-        tempo = tempo - timeAlvo;
-        int pixels = (int) (tempo / 30) + 10;
-        int ponto = (int) ((600 - pixels) / 2) + pixels;
-        this.pontoDestino = new Pontos(origemAlvo.getX(), ponto);
-
+    public void setPontoDestino(Pontos pontoDestino) {
+        this.pontoDestino = pontoDestino;
     }
 
     public void calcularCatetos() {
-
-        double adj = pontoOrigem.getX() - pontoDestino.getX();
-        double opo = pontoOrigem.getY() - pontoDestino.getY();
+        double adj = getPontoOrigem().getX() - pontoDestino.getX();
+        double opo = getPontoOrigem().getY() - pontoDestino.getY();
         double hip = (int) Math.sqrt((Math.pow(adj, 2) + Math.pow(opo, 2)));
 
-        cateto1 = adj / hip;
-        cateto2 = opo / hip;
+        this.cateto1 = adj / hip;
+        this.cateto2 = opo / hip;
     }
 
     public void mover(double adj, double opo) {
+
         if (getLocalizacao().getY() < 0 || getLocalizacao().getX() < 0 || getLocalizacao().getX() > 600) {
             getLocalizacao().setX(305);
             getLocalizacao().setY(530);
+            setContatoAlvo(true);
 
         } else {
             getLocalizacao().setX((int) (getLocalizacao().getX() - adj * 2));
@@ -87,13 +86,10 @@ public class Tiros extends Thread {
     public void run() {
         calcularCatetos();
         while (true) {
-            mover(cateto1, cateto2);
-            if (contatoAlvo) {
-                break;
-            }
-
             try {
                 sleep(getFreq());
+                mover(cateto1, cateto2);
+
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
