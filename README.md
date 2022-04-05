@@ -31,3 +31,5 @@ The `JAVA PROJECTS` view allows you to manage your dependencies. More details ca
 - Implementar a ideia de munição e carregador para os tiros (em runnable)
 - Criar várias threads para o lançador e ir decidindo pelo semáforo quem vai primeiro
 - Ainda com problemas no cáulculo da trajetória para alvos no lado direito
+
+- Gerar um arquivo com as importações

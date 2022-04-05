@@ -70,6 +70,7 @@ public class Alvos extends Thread {
     }
 
     public void run() {
+
         while (true) {
             try {
                 sleep(getFreq());
@@ -81,6 +82,7 @@ public class Alvos extends Thread {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
+
         }
     }
 }

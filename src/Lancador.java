@@ -45,12 +45,11 @@ public class Lancador extends Thread {
         int pixels = (int) (tempo / 30) + 10;
         int ponto = (int) ((600 - pixels) / 2) + pixels;
         tiro.setPontoDestino(new Pontos(origemAlvo.getX(), ponto));
-
     }
 
     public void carregar() {
 
-        calcularDestino(this.alvo.getPontoOrigem(), this.alvo.getPontoDestino(), this.alvo.getTimestamp());
+        tiro = new Tiros();
         carregador.pop();
         if (carregador.empty()) {
             System.out.println("Carregador vazio");
@@ -60,10 +59,12 @@ public class Lancador extends Thread {
 
     public void preparar() {
         try {
+            calcularDestino(this.alvo.getPontoOrigem(), this.alvo.getPontoDestino(), this.alvo.getTimestamp());
             sleep(30);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+
     }
 
     public void atirar() {
@@ -72,30 +73,31 @@ public class Lancador extends Thread {
     }
 
     public void run() {
-        carregar();
-        preparar();
-        atirar();
 
-        while (true) {
-            System.out.println(getTiro().getContatoAlvo());
-
-            if (this.tiro.getContatoAlvo()) {
-                System.out.println(1);
-                tiro = new Tiros();
+        while (!carregador.empty()) {
+            try {
+                semaforo.acquire();
                 carregar();
                 preparar();
                 atirar();
+
+                while (tiro.isAlive()) {
+                    if (tiro.isInterrupted()) {
+                        if (tiro.getContatoAlvo()) {
+                            carregador.add(new Municao());
+                        } else {
+                            carregador.pop();
+                        }
+                        semaforo.release();
+                    }
+                }
+
+            } catch (InterruptedException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
             }
         }
-
-        // while (true) {
-        // if (this.tiro.getContatoAlvo() == true) {
-        // tiro = new Tiros();
-        // tiro.start();
-        // }
-
-        // }
-
+        System.out.println("Jogo finalizado");
     }
 
 }

@@ -36,9 +36,9 @@ public class Interface extends JFrame {
     Runnable r1 = () -> {
         while (true) {
             try {
-                Thread.sleep(new Random().nextInt(2000) + 3000);
+                Thread.sleep(new Random().nextInt(2000) + 1000);
                 alvosEsq.add(new Alvos(new Pontos(60, 0), new Pontos(60, 600)));
-                Thread.sleep(new Random().nextInt(2000) + 3000);
+                Thread.sleep(new Random().nextInt(2000) + 500);
                 alvosDir.add(new Alvos(new Pontos(490, 0), new Pontos(490, 600)));
 
             } catch (InterruptedException e) {
@@ -50,7 +50,7 @@ public class Interface extends JFrame {
     };
 
     public void atualizar() {
-        System.out.println(lancador.getTiro().getContatoAlvo());
+
     }
 
     public void desenharGraficos() {
@@ -63,20 +63,27 @@ public class Interface extends JFrame {
         // Desenhando a nuvem
         bbg.drawImage(nuvem.getImage(), 50, 100, 500, 271, this);
 
+        // Lógica para pegar a localização dos alvos e gerar na tela
         for (int i = 0; i < alvosDir.size(); i++) {
             bbg.drawImage(meteoro.getImage(), alvosDir.get(i).getLocalizacao().getX(),
                     alvosDir.get(i).getLocalizacao().getY(), 50, 50, this);
 
+            // Setar um alvo para o lançador
             if (lancador.getAlvo() == null) {
                 lancador.setAlvo(alvosDir.get(i));
             }
 
+            // Verificando colisão
             colidiu = colisao(alvosDir.get(i).getLocalizacao().getX(), alvosDir.get(i).getLocalizacao().getY(), 50, 50,
                     lancador.getTiro().getLocalizacao().getX(), lancador.getTiro().getLocalizacao().getY(), 50, 50);
 
+            // Verificando se o alvo chegou até o final da tela
             if (alvosDir.get(i).getChegouDestino() || colidiu) {
                 alvosDir.get(i).setAtingido(colidiu);
-                lancador.getTiro().setContatoAlvo(colidiu);
+
+                if (colidiu) {
+                    lancador.getTiro().setContatoAlvo(colidiu);
+                }
                 alvosDir.remove(i);
                 i--;
             }
@@ -95,8 +102,10 @@ public class Interface extends JFrame {
 
             if (alvosEsq.get(i).getChegouDestino() || colidiu) {
                 alvosEsq.get(i).setAtingido(colidiu);
-                lancador.getTiro().setContatoAlvo(colidiu);
 
+                if (colidiu) {
+                    lancador.getTiro().setContatoAlvo(colidiu);
+                }
                 alvosEsq.remove(i);
                 i--;
             }
@@ -114,6 +123,7 @@ public class Interface extends JFrame {
         g.drawImage(backBuffer, 0, 0, this);
     }
 
+    // Lógica para colisão
     public boolean colisao(int obj1X, int obj1Y, int obj1W, int obj1H,
             int obj2X, int obj2Y, int obj2W, int obj2H) {
         if ((obj1X >= obj2X && obj1X <= obj2X + obj2W)
@@ -135,6 +145,7 @@ public class Interface extends JFrame {
 
     public void inicializar() {
 
+        // Alvos iniciais e tarefa r1 inicializada
         alvosEsq.add(new Alvos(new Pontos(60, 0), new Pontos(60, 600)));
         alvosDir.add(new Alvos(new Pontos(490, 0), new Pontos(490, 600)));
         contagem.execute(r1);
@@ -150,6 +161,7 @@ public class Interface extends JFrame {
     }
 
     public void run() {
+
         inicializar();
         while (true) {
             atualizar();

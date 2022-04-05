@@ -1,5 +1,3 @@
-import java.util.Random;
-
 public class Tiros extends Thread {
 
     private static long totalTiros = 0;
@@ -10,10 +8,9 @@ public class Tiros extends Thread {
     private Pontos localizacaoAtualizada;
     private long timestamp;
     private long freqAtualizarPosicao = 30;
-    private boolean contatoAlvo;
-    private double cateto1, cateto2;
+    private boolean contatoAlvo, contatoJanela;
+    private double sen, cos;
 
-    // double id, Pontos origemAlvo, Pontos destinoAlvo, long timeAlvo
     public Tiros() {
         Tiros.totalTiros++;
         this.id = Tiros.totalTiros;
@@ -38,6 +35,10 @@ public class Tiros extends Thread {
         return this.contatoAlvo;
     }
 
+    public boolean getContatoJanela() {
+        return this.contatoJanela;
+    }
+
     public Pontos getPontoOrigem() {
         return this.pontoOrigem;
     }
@@ -50,6 +51,10 @@ public class Tiros extends Thread {
         this.contatoAlvo = contato;
     }
 
+    public void setContatoJanela(boolean contato) {
+        this.contatoJanela = contato;
+    }
+
     public void setPontoDestino(Pontos pontoDestino) {
         this.pontoDestino = pontoDestino;
     }
@@ -59,37 +64,36 @@ public class Tiros extends Thread {
         double opo = getPontoOrigem().getY() - pontoDestino.getY();
         double hip = (int) Math.sqrt((Math.pow(adj, 2) + Math.pow(opo, 2)));
 
-        this.cateto1 = adj / hip;
-        this.cateto2 = opo / hip;
+        this.cos = adj / hip;
+        this.sen = opo / hip;
+
+        System.out.println(this.cos);
+        System.out.println(this.sen);
     }
 
-    public void mover(double adj, double opo) {
+    public void mover(double cos, double sen, int att) {
 
         if (getLocalizacao().getY() < 0 || getLocalizacao().getX() < 0 || getLocalizacao().getX() > 600) {
-            getLocalizacao().setX(305);
-            getLocalizacao().setY(530);
-            setContatoAlvo(true);
+            setContatoJanela(true);
 
         } else {
-            getLocalizacao().setX((int) (getLocalizacao().getX() - adj * 2));
-            getLocalizacao().setY((int) (getLocalizacao().getY() - opo * 2));
+            getLocalizacao().setX((int) (getLocalizacao().getX() - cos * att));
+            getLocalizacao().setY((int) (getLocalizacao().getY() - sen * att));
         }
     }
 
-    // public void moveTiro1() {
-
-    // double dx = Math.cos(Math.toRadians(this.angulo));
-    // double dy = Math.sin(Math.toRadians(this.angulo));
-
-    // }
-
     public void run() {
+
         calcularCatetos();
         while (true) {
             try {
                 sleep(getFreq());
-                mover(cateto1, cateto2);
+                mover(cos, sen, 2);
 
+                if (getContatoAlvo() || getContatoJanela()) {
+                    this.interrupt();
+                    break;
+                }
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
