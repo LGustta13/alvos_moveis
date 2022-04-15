@@ -41,12 +41,20 @@ public class Lancador extends Thread {
     public void calcularDestino(Pontos origemAlvo, Pontos destinoAlvo, long timeAlvo) {
 
         long tempo = System.currentTimeMillis() - timeAlvo;
-        int pixels = (int) (tempo / 30) + 10;
-        int ponto = (int) ((600 - pixels) / 2) + pixels;
-        tiro.setPontoDestino(new Pontos(origemAlvo.getX(), ponto));
-        System.out.println(this.getAlvo().getId());
+        double pixels = 0.07 * tempo;
+        System.out.println(tempo);
 
-        System.out.println(tiro.getPontoDestino().getX() + "---" + tiro.getPontoDestino().getY());
+        if (tempo <= 3500) {
+            tiro.setPontoDestino(new Pontos(origemAlvo.getX(), pixels + 150));
+        } else if (tempo > 3500 && tempo <= 4500) {
+            tiro.setPontoDestino(new Pontos(origemAlvo.getX(), pixels + 100));
+        } else if (tempo > 4500 && tempo <= 6000) {
+            tiro.setPontoDestino(new Pontos(origemAlvo.getX(), pixels + 70));
+        } else if (tempo > 6000 && tempo <= 7000) {
+            tiro.setPontoDestino(new Pontos(origemAlvo.getX(), pixels + 50));
+        }
+
+        System.out.println(this.getAlvo().getId());
     }
 
     public void carregar() {

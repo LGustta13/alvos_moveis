@@ -80,7 +80,7 @@ public class Tiros extends Thread {
         while (true) {
             try {
                 sleep(getFreq());
-                mover(cos, sen, 3);
+                mover(cos, sen, 5);
 
                 if (getContatoAlvo() || getContatoJanela()) {
                     this.interrupt();

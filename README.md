@@ -7,7 +7,5 @@ email: luis.oliveira2@estudante.ufla.br
 
 ### à fazer
 
-- Arrumar limites de colisão
-- Método que calcula o ponto de destino
 - Problemas no carregador (contabilizando mais munições que o necessário)
 - Radar
