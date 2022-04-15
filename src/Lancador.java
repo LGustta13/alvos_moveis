@@ -9,13 +9,9 @@ public class Lancador extends Thread {
     private Alvos alvo;
     private Semaphore semaforo;
 
-    public Lancador(Pontos posicao, Alvos alvo) {
+    public Lancador(Pontos posicao) {
         this.posicao = posicao;
-        this.alvo = alvo;
-        this.tiro = new Tiros();
         this.semaforo = new Semaphore(1);
-        this.carregador.add(new Municao());
-        this.carregador.add(new Municao());
         this.carregador.add(new Municao());
         this.carregador.add(new Municao());
         this.carregador.add(new Municao());
@@ -38,13 +34,17 @@ public class Lancador extends Thread {
         this.alvo = alvo;
     }
 
+    public void setCarregador() {
+        carregador.pop();
+    }
+
     public void calcularDestino(Pontos origemAlvo, Pontos destinoAlvo, long timeAlvo) {
 
-        long tempo = System.currentTimeMillis();
-        tempo = tempo - timeAlvo;
+        long tempo = System.currentTimeMillis() - timeAlvo;
         int pixels = (int) (tempo / 30) + 10;
         int ponto = (int) ((600 - pixels) / 2) + pixels;
         tiro.setPontoDestino(new Pontos(origemAlvo.getX(), ponto));
+        System.out.println(this.getAlvo().getId());
     }
 
     public void carregar() {
@@ -59,6 +59,7 @@ public class Lancador extends Thread {
 
     public void preparar() {
         try {
+            this.tiro = new Tiros();
             calcularDestino(this.alvo.getPontoOrigem(), this.alvo.getPontoDestino(), this.alvo.getTimestamp());
             sleep(30);
         } catch (InterruptedException e) {
@@ -75,26 +76,30 @@ public class Lancador extends Thread {
     public void run() {
 
         while (!carregador.empty()) {
-            try {
-                semaforo.acquire();
-                carregar();
-                preparar();
-                atirar();
+            if (this.alvo != null) {
+                try {
+                    semaforo.acquire();
+                    carregar();
+                    preparar();
+                    atirar();
 
-                while (tiro.isAlive()) {
-                    if (tiro.isInterrupted()) {
-                        if (tiro.getContatoAlvo()) {
-                            carregador.add(new Municao());
-                        } else {
-                            carregador.pop();
+                    while (tiro.isAlive()) {
+                        if (tiro.isInterrupted()) {
+                            if (tiro.getContatoAlvo()) {
+                                carregador.add(new Municao());
+                            } else if (this.getAlvo() != null) {
+                                this.alvo.setErrou(true);
+                                carregador.pop();
+                            }
+                            this.setAlvo(null);
+                            semaforo.release();
                         }
-                        semaforo.release();
                     }
-                }
 
-            } catch (InterruptedException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+                } catch (InterruptedException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
             }
         }
         System.out.println("Jogo finalizado");

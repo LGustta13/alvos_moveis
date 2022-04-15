@@ -62,7 +62,7 @@ public class Tiros extends Thread {
     public void calcularCatetos() {
         double adj = getPontoOrigem().getX() - pontoDestino.getX();
         double opo = getPontoOrigem().getY() - pontoDestino.getY();
-        double hip = (int) Math.sqrt((Math.pow(adj, 2) + Math.pow(opo, 2)));
+        double hip = Math.sqrt((Math.pow(adj, 2) + Math.pow(opo, 2)));
 
         this.cos = adj / hip;
         this.sen = opo / hip;
@@ -77,8 +77,9 @@ public class Tiros extends Thread {
             setContatoJanela(true);
 
         } else {
-            getLocalizacao().setX((int) (getLocalizacao().getX() - cos * att));
-            getLocalizacao().setY((int) (getLocalizacao().getY() - sen * att));
+            getLocalizacao().setX(getLocalizacao().getX() - cos * att);
+            getLocalizacao().setY(getLocalizacao().getY() - sen * att);
+
         }
     }
 
@@ -88,7 +89,7 @@ public class Tiros extends Thread {
         while (true) {
             try {
                 sleep(getFreq());
-                mover(cos, sen, 2);
+                mover(cos, sen, 3);
 
                 if (getContatoAlvo() || getContatoJanela()) {
                     this.interrupt();

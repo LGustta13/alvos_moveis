@@ -7,8 +7,7 @@ public class Alvos extends Thread {
     private Pontos localizacaoAtualizada;
     private long timestamp;
     private long freqAtualizarPosicao;
-    private boolean chegouDestino;
-    private boolean atingido;
+    private boolean chegouDestino, atingido, errou;
 
     public Alvos(Pontos pontoOrigem, Pontos pontoDestino) {
         Alvos.totalAlvos++;
@@ -59,6 +58,14 @@ public class Alvos extends Thread {
 
     public void setAtingido(boolean atingiu) {
         this.atingido = atingiu;
+    }
+
+    public boolean getErrou() {
+        return this.errou;
+    }
+
+    public void setErrou(boolean errou) {
+        this.errou = errou;
     }
 
     public void moveAlvo() {
