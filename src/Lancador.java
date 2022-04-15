@@ -45,6 +45,8 @@ public class Lancador extends Thread {
         int ponto = (int) ((600 - pixels) / 2) + pixels;
         tiro.setPontoDestino(new Pontos(origemAlvo.getX(), ponto));
         System.out.println(this.getAlvo().getId());
+
+        System.out.println(tiro.getPontoDestino().getX() + "---" + tiro.getPontoDestino().getY());
     }
 
     public void carregar() {

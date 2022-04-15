@@ -66,8 +66,9 @@ public class Interface extends JFrame {
 
             // Verificando colisão
             if (lancador.getTiro() != null) {
-                colidiu = colisao(alvos.get(i).getLocalizacao().getX(), alvos.get(i).getLocalizacao().getY(), 50, 50,
-                        lancador.getTiro().getLocalizacao().getX(), lancador.getTiro().getLocalizacao().getY(), 50, 50);
+                colidiu = colisao(lancador.getTiro().getLocalizacao().getX(),
+                        lancador.getTiro().getLocalizacao().getY(), 15, 15, alvos.get(i).getLocalizacao().getX(),
+                        alvos.get(i).getLocalizacao().getY(), 50, 50);
 
             }
 

@@ -1,20 +1,13 @@
 public class Tiros extends Thread {
 
-    private static long totalTiros = 0;
-    private long id;
-    private int municao;
     private Pontos pontoOrigem;
     private Pontos pontoDestino;
     private Pontos localizacaoAtualizada;
-    private long timestamp;
     private long freqAtualizarPosicao = 30;
     private boolean contatoAlvo, contatoJanela;
     private double sen, cos;
 
     public Tiros() {
-        Tiros.totalTiros++;
-        this.id = Tiros.totalTiros;
-        this.timestamp = System.currentTimeMillis();
         this.pontoOrigem = new Pontos(305, 530);
         this.localizacaoAtualizada = pontoOrigem;
     }
@@ -67,8 +60,6 @@ public class Tiros extends Thread {
         this.cos = adj / hip;
         this.sen = opo / hip;
 
-        System.out.println(this.cos);
-        System.out.println(this.sen);
     }
 
     public void mover(double cos, double sen, int att) {
