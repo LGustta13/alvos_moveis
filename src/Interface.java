@@ -8,6 +8,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 
 public class Interface extends JFrame {
 
@@ -40,10 +41,12 @@ public class Interface extends JFrame {
                 e.printStackTrace();
             }
         }
-
     };
 
     public void atualizar() {
+        if (!this.lancador.isAlive()) {
+            Thread.currentThread().interrupt();
+        }
     }
 
     public void desenharGraficos() {
@@ -51,6 +54,10 @@ public class Interface extends JFrame {
         Graphics bbg = backBuffer.getGraphics();
         bbg.drawImage(fundo.getImage(), 0, 0, 600, 600, this); // Desenhando a imagem de fundo
         bbg.drawImage(nuvem.getImage(), 50, 100, 500, 271, this); // Desenhando a nuvem
+
+        bbg.setColor(Color.WHITE);
+        bbg.setFont(new Font("helvica", Font.BOLD, 20));
+        bbg.drawString("Munição: " + this.lancador.statusCarregador(), 250, 70);
 
         // Lógica para pegar a localização dos alvos e gerar na tela
         for (int i = 0; i < alvos.size(); i++) {
@@ -142,9 +149,9 @@ public class Interface extends JFrame {
             try {
                 Thread.sleep(1000 / FPS);
             } catch (Exception e) {
-                System.out.println("Thread interrompida!");
+                break;
             }
-
         }
+        JOptionPane.showMessageDialog(null, "Jogo finalizado: sem munições!");
     }
 }

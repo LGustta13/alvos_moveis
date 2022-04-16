@@ -6,10 +6,12 @@ public class Tiros extends Thread {
     private long freqAtualizarPosicao = 30;
     private boolean contatoAlvo, contatoJanela;
     private double sen, cos;
+    private int velocidade;
 
-    public Tiros() {
+    public Tiros(int velocidade) {
         this.pontoOrigem = new Pontos(305, 530);
         this.localizacaoAtualizada = pontoOrigem;
+        this.velocidade = velocidade;
     }
 
     public Pontos getLocalizacao() {
@@ -80,7 +82,7 @@ public class Tiros extends Thread {
         while (true) {
             try {
                 sleep(getFreq());
-                mover(cos, sen, 5);
+                mover(cos, sen, velocidade); // NÚMERO DE PIXELS PERCORRIDOS
 
                 if (getContatoAlvo() || getContatoJanela()) {
                     this.interrupt();

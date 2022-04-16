@@ -7,5 +7,4 @@ email: luis.oliveira2@estudante.ufla.br
 
 ### à fazer
 
-- Problemas no carregador (contabilizando mais munições que o necessário)
 - Radar
