@@ -34,6 +34,10 @@ public class Lancador extends Thread {
         this.alvo = alvo;
     }
 
+    public void retirarMunicao() {
+        carregador.pop();
+    }
+
     public int statusCarregador() {
         return carregador.size();
     }
@@ -91,7 +95,6 @@ public class Lancador extends Thread {
                         if (tiro.isInterrupted()) {
                             if (tiro.getContatoAlvo()) {
                                 if (carregador.size() < 5) {
-                                    carregador.add(new Municao());
                                     carregador.add(new Municao());
                                 }
                             } else if (this.getAlvo() != null) {

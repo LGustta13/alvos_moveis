@@ -32,9 +32,9 @@ public class Interface extends JFrame {
         while (true) {
             try {
                 alvos.add(new Alvos(new Pontos(60, 0), new Pontos(60, 600)));
-                Thread.sleep(new Random().nextInt(2000) + 500);
+                Thread.sleep(new Random().nextInt(2000) + 300);// 300/500
                 alvos.add(new Alvos(new Pontos(490, 0), new Pontos(490, 600)));
-                Thread.sleep(new Random().nextInt(2000) + 1000);
+                Thread.sleep(new Random().nextInt(2000) + 700);// 700/1000
 
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
@@ -82,6 +82,10 @@ public class Interface extends JFrame {
             // Verificando se o alvo chegou até o final da tela
             if (alvos.get(i).getChegouDestino() || colidiu) {
                 alvos.get(i).setAtingido(colidiu);
+
+                if (alvos.get(i).getChegouDestino() && lancador.statusCarregador() != 0) {
+                    lancador.retirarMunicao();
+                }
 
                 if (colidiu) {
                     lancador.getTiro().setContatoAlvo(colidiu);
