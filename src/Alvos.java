@@ -1,3 +1,5 @@
+import java.util.Random;
+
 public class Alvos extends Thread {
 
     private static long totalAlvos = 0;
@@ -8,6 +10,7 @@ public class Alvos extends Thread {
     private long timestamp;
     private long freqAtualizarPosicao;
     private boolean chegouDestino, atingido, errou;
+    private int contagem, velocidade;
 
     public Alvos(Pontos pontoOrigem, Pontos pontoDestino) {
         Alvos.totalAlvos++;
@@ -17,6 +20,8 @@ public class Alvos extends Thread {
         this.pontoDestino = pontoDestino;
         this.localizacaoAtualizada = pontoOrigem;
         this.freqAtualizarPosicao = 30;
+        this.contagem = 0;
+        this.velocidade = 2;
         start();
     }
 
@@ -68,11 +73,29 @@ public class Alvos extends Thread {
         this.errou = errou;
     }
 
-    public void moveAlvo() {
+    public int getContagem() {
+        return this.contagem;
+    }
+
+    public void setContagem(int contagem) {
+        this.contagem = contagem;
+    }
+
+    public int velAleatoria() {
+        if (getContagem() == 5) {
+            setContagem(0);
+            return this.velocidade = (new Random().nextInt(4) + 1);
+        } else {
+            setContagem(getContagem() + 1);
+            return this.velocidade;
+        }
+    }
+
+    public void moveAlvo(int velocidade) {
         if (this.getLocalizacao().getY() >= getPontoDestino().getY()) {
             this.chegouDestino = true;
         } else {
-            this.getLocalizacao().setY(getLocalizacao().getY() + 2);
+            this.getLocalizacao().setY(getLocalizacao().getY() + velocidade);
         }
     }
 
@@ -81,7 +104,7 @@ public class Alvos extends Thread {
         while (true) {
             try {
                 sleep(getFreq());
-                moveAlvo();
+                moveAlvo(velAleatoria());
                 if (chegouDestino || atingido) {
                     this.interrupt();
                     break;

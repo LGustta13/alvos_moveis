@@ -3,6 +3,5 @@ public class App {
 
         Interface game = new Interface();
         game.run();
-
     }
 }
