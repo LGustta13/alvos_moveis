@@ -10,7 +10,8 @@ public class Alvos extends Thread {
     private long timestamp;
     private long freqAtualizarPosicao;
     private boolean chegouDestino, atingido, errou;
-    private int contagem, velocidade;
+
+    private int[] velocidades;
 
     public Alvos(Pontos pontoOrigem, Pontos pontoDestino) {
         Alvos.totalAlvos++;
@@ -20,8 +21,7 @@ public class Alvos extends Thread {
         this.pontoDestino = pontoDestino;
         this.localizacaoAtualizada = pontoOrigem;
         this.freqAtualizarPosicao = 30;
-        this.contagem = 0;
-        this.velocidade = 2;
+        this.velocidades = new int[(int)pontoDestino.getY()/2];
         start();
     }
 
@@ -73,21 +73,10 @@ public class Alvos extends Thread {
         this.errou = errou;
     }
 
-    public int getContagem() {
-        return this.contagem;
-    }
-
-    public void setContagem(int contagem) {
-        this.contagem = contagem;
-    }
-
-    public int velAleatoria() {
-        if (getContagem() == 5) {
-            setContagem(0);
-            return this.velocidade = (new Random().nextInt(4) + 1);
-        } else {
-            setContagem(getContagem() + 1);
-            return this.velocidade;
+    public void velAleatoria() {
+        Random gerador = new Random();
+        for(int i = 0; i<getPontoDestino().getY()/2; i++){
+            velocidades[(int)(gerador.nextDouble()*(getPontoDestino().getY())/2)] +=2;
         }
     }
 
@@ -101,10 +90,17 @@ public class Alvos extends Thread {
 
     public void run() {
 
+        velAleatoria();
+        int i = 0;
         while (true) {
             try {
                 sleep(getFreq());
-                moveAlvo(velAleatoria());
+                if(i!=300){
+                    moveAlvo(velocidades[i]);
+                } else {
+                    moveAlvo(1);
+                }
+
                 if (chegouDestino || atingido) {
                     this.interrupt();
                     break;
@@ -112,7 +108,7 @@ public class Alvos extends Thread {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-
+            i++;
         }
     }
 }

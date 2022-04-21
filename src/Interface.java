@@ -32,9 +32,9 @@ public class Interface extends JFrame {
         while (true) {
             try {
                 alvos.add(new Alvos(new Pontos(60, 0), new Pontos(60, 600)));
-                Thread.sleep(new Random().nextInt(2000) + 300);// 300/500
+                Thread.sleep(new Random().nextInt(2000) + 300);// 300
                 alvos.add(new Alvos(new Pontos(490, 0), new Pontos(490, 600)));
-                Thread.sleep(new Random().nextInt(2000) + 700);// 700/1000
+                Thread.sleep(new Random().nextInt(2000) + 700);// 700
 
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();

@@ -48,13 +48,13 @@ public class Lancador extends Thread {
         double pixels = 0.07 * tempo;
 
         if (tempo <= 3500) {
-            tiro.setPontoDestino(new Pontos(origemAlvo.getX(), pixels + 150));
+            tiro.setPontoDestino(new Pontos(origemAlvo.getX(), pixels + 150));  // 150
         } else if (tempo > 3500 && tempo <= 4500) {
-            tiro.setPontoDestino(new Pontos(origemAlvo.getX(), pixels + 100));
+            tiro.setPontoDestino(new Pontos(origemAlvo.getX(), pixels + 100));  // 100
         } else if (tempo > 4500 && tempo <= 6000) {
-            tiro.setPontoDestino(new Pontos(origemAlvo.getX(), pixels + 70));
+            tiro.setPontoDestino(new Pontos(origemAlvo.getX(), pixels + 70));  // 70
         } else if (tempo > 6000 && tempo <= 7000) {
-            tiro.setPontoDestino(new Pontos(origemAlvo.getX(), pixels + 50));
+            tiro.setPontoDestino(new Pontos(origemAlvo.getX(), pixels + 50));   // 50
         } else {
             tiro.setPontoDestino(new Pontos(origemAlvo.getX(), 530));
         }
@@ -62,7 +62,7 @@ public class Lancador extends Thread {
 
     public void carregar() {
 
-        tiro = new Tiros(5); // VELOCIDADE DO TIRO
+        tiro = new Tiros(); // VELOCIDADE DO TIRO
         carregador.pop();
     }
 
@@ -92,6 +92,9 @@ public class Lancador extends Thread {
                     atirar();
 
                     while (tiro.isAlive()) {
+                        if(this.getAlvo() !=null){
+                            tiro.setPosicaoAlvo(this.getAlvo().getLocalizacao());
+                        }
                         if (tiro.isInterrupted()) {
                             if (tiro.getContatoAlvo()) {
                                 if (carregador.size() < 5) {
