@@ -4,15 +4,15 @@ public class Tiros extends Thread {
     private Pontos pontoDestino;
     private Pontos localizacaoAtualizada;
     private long freqAtualizarPosicao = 30;
+    private long timestamp;
     private boolean contatoAlvo, contatoJanela;
-    private double sen, cos, hip, velocidade, Tn, tempo, percurso, flag;
-    private int N = 50;
-
-    private Pontos posicaoAlvo;
+    private double sen, cos, hip, velocidade, Tn, tempo, percurso, flag, posicaoInicialAlvo;
+    private int N = 15;
+    private Alvos alvo;
 
     public Tiros() {
         this.pontoOrigem = new Pontos(305, 530);
-        this.localizacaoAtualizada = pontoOrigem;
+        this.localizacaoAtualizada = pontoOrigem;;
     }
 
     public Pontos getLocalizacao() {
@@ -54,13 +54,11 @@ public class Tiros extends Thread {
     public void setPontoDestino(Pontos pontoDestino) {
         this.pontoDestino = pontoDestino;
     }
-
-    public void setPosicaoAlvo(Pontos posicaoAlvo){
-        this.posicaoAlvo = posicaoAlvo;
+    public void setAlvo(Alvos alvo){
+        this.alvo = alvo;
     }
-
-    public Pontos getPosicaoAlvo(){
-        return this.posicaoAlvo;
+    public Alvos getAlvo(){
+        return this.alvo;
     }
 
     public void calculaCatetos() {
@@ -70,29 +68,28 @@ public class Tiros extends Thread {
 
         this.cos = adj / this.hip;
         this.sen = opo / this.hip;
-
     }
-
     public void calculaParametros(){
-        this.tempo = (this.getPontoDestino().getY() - this.getPosicaoAlvo().getY()) * (getFreq()/2);  // MILISSEGUNDOS
-        this.Tn = this.tempo/this.N;      // Tn É O 0,75
+        this.posicaoInicialAlvo = alvo.getLocalizacao().getY();
+        this.timestamp = System.currentTimeMillis();
+        this.tempo = (this.getPontoDestino().getY() - posicaoInicialAlvo) * (getFreq()/2);  // MILISSEGUNDOS
         this.percurso = this.hip/this.N;  // É A QUANTIDADE DE PIXELS A CADA PONTO DA TRAJETÓRIA
+
         this.flag = this.percurso;
-    };
+    }
 
     public double calculaVelocidade(){
 
         double[] y = new double[this.N + 1]; // TEMPOS - A PARTIR DAQUI SURGEM AS VELOCIDADES
         double[] v = new double[this.N + 1]; // TOLERÂNCIA
         double[] A = new double[this.N + 1]; // RESTRIÇÕES
+        this.Tn = this.tempo/this.N;      // Tn É O 0,75
 
         if(this.flag >= this.percurso && y.length != 1){
-            //System.out.println("N: " + this.N);
-//        System.out.println("hip: "+this.hip);
-            //System.out.println("Tn: "+ this.Tn);
-            // System.out.println("percurso: "+ percurso);
-//        System.out.println("velocidade: " + velocidade);
-//        System.out.println("tempo: "+this.tempo);
+
+            double pixelsTotal = (double)2*((System.currentTimeMillis() - this.timestamp)/ getFreq());
+            double pixelsReal = alvo.getLocalizacao().getY() - this.posicaoInicialAlvo;
+            double variacao = 15*(pixelsTotal-pixelsReal);
 
             for(int i = 0; i<this.N + 1; i++){
                 if(i != 0) {
@@ -103,27 +100,20 @@ public class Tiros extends Thread {
                     y[i] = this.tempo;
                     A[i] = 1;
                 }
-                v[i] = 0.2;
+                v[i] = 0.01;
 
-//                System.out.println(y[i]);
-//                System.out.println(v[i]);
-//                System.out.println(A[i]);
             }
-            // System.out.println("****************");
 
             Reconciliation rec = new Reconciliation(y, v, A);
-            //System.out.println(y[1]);
-            //System.out.println(rec.getReconciledFlow()[1]);
-            //rec.printMatrix(rec.getReconciledFlow());
 
             this.N --;
-            this.tempo -= this.Tn;
+            this.tempo -= (y[1] + variacao);
             this.flag = this.velocidade;
-//            System.out.println(this.percurso);
-//            System.out.println(rec.getReconciledFlow()[1]);
 
             this.velocidade = this.percurso*((double)getFreq())/(rec.getReconciledFlow()[1]);
-            System.out.println(this.velocidade);
+            this.posicaoInicialAlvo = alvo.getLocalizacao().getY();
+            this.timestamp = System.currentTimeMillis();
+            // System.out.println(this.velocidade);
             return this.velocidade;
 
         } else {
@@ -155,6 +145,7 @@ public class Tiros extends Thread {
 
                 if (getContatoAlvo() || getContatoJanela()) {
                     this.interrupt();
+                    System.out.println("****************");
                     break;
                 }
             } catch (InterruptedException e) {

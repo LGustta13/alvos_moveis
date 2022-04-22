@@ -93,7 +93,7 @@ public class Lancador extends Thread {
 
                     while (tiro.isAlive()) {
                         if(this.getAlvo() !=null){
-                            tiro.setPosicaoAlvo(this.getAlvo().getLocalizacao());
+                            tiro.setAlvo(this.getAlvo());
                         }
                         if (tiro.isInterrupted()) {
                             if (tiro.getContatoAlvo()) {
