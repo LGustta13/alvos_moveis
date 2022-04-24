@@ -2,10 +2,17 @@ public class Municao {
 
     private static int quantidade = 0;
     private int id;
-    private boolean utilizada = false;
 
     public Municao() {
-        this.quantidade++;
-        this.id = this.quantidade;
+        Municao.quantidade++;
+        setId(quantidade);
+    }
+
+    public int getId() {
+        return this.id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }

@@ -9,13 +9,9 @@ public class Lancador extends Thread {
     private Alvos alvo;
     private Semaphore semaforo;
 
-    public Lancador(Pontos posicao, Alvos alvo) {
+    public Lancador(Pontos posicao) {
         this.posicao = posicao;
-        this.alvo = alvo;
-        this.tiro = new Tiros();
         this.semaforo = new Semaphore(1);
-        this.carregador.add(new Municao());
-        this.carregador.add(new Municao());
         this.carregador.add(new Municao());
         this.carregador.add(new Municao());
         this.carregador.add(new Municao());
@@ -38,28 +34,41 @@ public class Lancador extends Thread {
         this.alvo = alvo;
     }
 
-    public void calcularDestino(Pontos origemAlvo, Pontos destinoAlvo, long timeAlvo) {
+    public void retirarMunicao() {
+        carregador.pop();
+    }
 
-        long tempo = System.currentTimeMillis();
-        tempo = tempo - timeAlvo;
-        int pixels = (int) (tempo / 30) + 10;
-        int ponto = (int) ((600 - pixels) / 2) + pixels;
-        tiro.setPontoDestino(new Pontos(origemAlvo.getX(), ponto));
+    public int statusCarregador() {
+        return carregador.size();
+    }
+
+    public void calcularDestino(Pontos origemAlvo, long timeAlvo) {
+
+        long tempo = System.currentTimeMillis() - timeAlvo;
+        double pixels = 0.07 * tempo;
+
+        if (tempo <= 3500) {
+            tiro.setPontoDestino(new Pontos(origemAlvo.getX(), pixels + 150));  // 150
+        } else if (tempo > 3500 && tempo <= 4500) {
+            tiro.setPontoDestino(new Pontos(origemAlvo.getX(), pixels + 100));  // 100
+        } else if (tempo > 4500 && tempo <= 6000) {
+            tiro.setPontoDestino(new Pontos(origemAlvo.getX(), pixels + 70));  // 70
+        } else if (tempo > 6000 && tempo <= 7000) {
+            tiro.setPontoDestino(new Pontos(origemAlvo.getX(), pixels + 50));   // 50
+        } else {
+            tiro.setPontoDestino(new Pontos(origemAlvo.getX(), 530));
+        }
     }
 
     public void carregar() {
 
-        tiro = new Tiros();
+        tiro = new Tiros(); // VELOCIDADE DO TIRO
         carregador.pop();
-        if (carregador.empty()) {
-            System.out.println("Carregador vazio");
-        }
-
     }
 
     public void preparar() {
         try {
-            calcularDestino(this.alvo.getPontoOrigem(), this.alvo.getPontoDestino(), this.alvo.getTimestamp());
+            calcularDestino(this.alvo.getPontoOrigem(), this.alvo.getTimestamp());
             sleep(30);
         } catch (InterruptedException e) {
             e.printStackTrace();
@@ -75,29 +84,35 @@ public class Lancador extends Thread {
     public void run() {
 
         while (!carregador.empty()) {
-            try {
-                semaforo.acquire();
-                carregar();
-                preparar();
-                atirar();
+            if (this.alvo != null) {
+                try {
+                    semaforo.acquire();
+                    carregar();
+                    preparar();
+                    atirar();
 
-                while (tiro.isAlive()) {
-                    if (tiro.isInterrupted()) {
-                        if (tiro.getContatoAlvo()) {
-                            carregador.add(new Municao());
-                        } else {
-                            carregador.pop();
+                    while (tiro.isAlive()) {
+                        if(this.getAlvo() !=null){
+                            // ASSOCIA O ALVO APONTADO PELO LANCADOR TAMBÉM AO TIRO
+                            tiro.setAlvo(this.getAlvo());
                         }
-                        semaforo.release();
+                        if (tiro.isInterrupted()) {
+                            if (tiro.getContatoAlvo()) {
+                                if (carregador.size() < 5) {
+                                    carregador.add(new Municao());
+                                }
+                            } else if (this.getAlvo() != null) {
+                                this.alvo.setErrou(true);
+                            }
+                            this.setAlvo(null);
+                            semaforo.release();
+                        }
                     }
-                }
 
-            } catch (InterruptedException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
         }
-        System.out.println("Jogo finalizado");
     }
-
 }
