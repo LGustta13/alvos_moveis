@@ -90,7 +90,7 @@ public class Tiros extends Thread {
         double[] y = new double[this.N+1]; // TEMPOS - A PARTIR DAQUI SURGEM AS VELOCIDADES
         double[] v = new double[this.N+1]; // TOLERÂNCIA
         double[] A = new double[this.N+1]; // RESTRIÇÕES
-        this.Tn = this.tempo/this.N;      // Tn É O 0,75
+        this.Tn = this.tempo/this.N;
 
         if(this.flag >= this.percurso && y.length != 1){
 
