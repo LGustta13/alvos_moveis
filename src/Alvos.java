@@ -75,6 +75,10 @@ public class Alvos extends Thread {
 
     public void velAleatoria() {
         Random gerador = new Random();
+
+        // O VETOR DE VELOCIDADES É CRIADO
+        // O ALVO AVANÇA 2 PIXELS A CADA 30MS, TOTALIZANDO 9000MS
+        //      ATÉ CHEGAR NO SEU DESTINO (600PX * 30MS/ 2PX)
         for(int i = 0; i<getPontoDestino().getY()/2; i++){
             velocidades[(int)(gerador.nextDouble()*(getPontoDestino().getY())/2)] +=2;
         }
@@ -90,17 +94,19 @@ public class Alvos extends Thread {
 
     public void run() {
 
+        // CRIA O VETOR DE VELOCIDADES PARA CADA ATUALIZAÇÃO DO ALVO
         velAleatoria();
         int i = 0;
         while (true) {
             try {
                 sleep(getFreq());
-                if(i!=300){
+                if(i!=getPontoDestino().getY()/2){
+
+                    // ATRIBUI APÓS CADA ATUALIZAÇÃO UM NOVO VALOR DE VELOCIDADE
                     moveAlvo(velocidades[i]);
                 } else {
                     moveAlvo(1);
                 }
-
                 if (chegouDestino || atingido) {
                     this.interrupt();
                     break;

@@ -1,5 +1,10 @@
+import java.io.IOException;
+
 public class Tiros extends Thread {
 
+    private static int id = 0;
+
+    private Excell dados;
     private Pontos pontoOrigem;
     private Pontos pontoDestino;
     private Pontos localizacaoAtualizada;
@@ -11,6 +16,7 @@ public class Tiros extends Thread {
     private Alvos alvo;
 
     public Tiros() {
+        this.id ++;
         this.pontoOrigem = new Pontos(305, 530);
         this.localizacaoAtualizada = pontoOrigem;;
     }
@@ -69,20 +75,21 @@ public class Tiros extends Thread {
         this.cos = adj / this.hip;
         this.sen = opo / this.hip;
     }
-    public void calculaParametros(){
+    public void calculaParametros() throws IOException {
         this.posicaoInicialAlvo = alvo.getLocalizacao().getY();
         this.timestamp = System.currentTimeMillis();
         this.tempo = (this.getPontoDestino().getY() - posicaoInicialAlvo) * (getFreq()/2);  // MILISSEGUNDOS
         this.percurso = this.hip/this.N;  // É A QUANTIDADE DE PIXELS A CADA PONTO DA TRAJETÓRIA
 
         this.flag = this.percurso;
+        dados = new Excell(this.id);
     }
 
-    public double calculaVelocidade(){
+    public double calculaVelocidade() throws IOException {
 
-        double[] y = new double[this.N + 1]; // TEMPOS - A PARTIR DAQUI SURGEM AS VELOCIDADES
-        double[] v = new double[this.N + 1]; // TOLERÂNCIA
-        double[] A = new double[this.N + 1]; // RESTRIÇÕES
+        double[] y = new double[this.N+1]; // TEMPOS - A PARTIR DAQUI SURGEM AS VELOCIDADES
+        double[] v = new double[this.N+1]; // TOLERÂNCIA
+        double[] A = new double[this.N+1]; // RESTRIÇÕES
         this.Tn = this.tempo/this.N;      // Tn É O 0,75
 
         if(this.flag >= this.percurso && y.length != 1){
@@ -91,7 +98,7 @@ public class Tiros extends Thread {
             double pixelsReal = alvo.getLocalizacao().getY() - this.posicaoInicialAlvo;
             double variacao = 15*(pixelsTotal-pixelsReal);
 
-            for(int i = 0; i<this.N + 1; i++){
+            for(int i = 0; i<this.N+1; i++){
                 if(i != 0) {
                     y[i] = Tn;
                     A[i] = -1;
@@ -101,25 +108,24 @@ public class Tiros extends Thread {
                     A[i] = 1;
                 }
                 v[i] = 0.01;
-
             }
 
             Reconciliation rec = new Reconciliation(y, v, A);
 
             this.N --;
             this.tempo -= (y[1] + variacao);
-            this.flag = this.velocidade;
 
             this.velocidade = this.percurso*((double)getFreq())/(rec.getReconciledFlow()[1]);
+            this.flag = this.velocidade;
             this.posicaoInicialAlvo = alvo.getLocalizacao().getY();
             this.timestamp = System.currentTimeMillis();
-            // System.out.println(this.velocidade);
-            return this.velocidade;
 
+            dados.escrever(v, A, y, rec.getReconciledFlow(), this.velocidade, variacao);
         } else {
             this.flag += this.velocidade;
-            return this.velocidade;
         }
+
+        return this.velocidade;
     }
 
     public void mover(double cos, double sen, double att) {
@@ -135,22 +141,25 @@ public class Tiros extends Thread {
     }
 
     public void run() {
+        try {
+            calculaCatetos();
+            calculaParametros();
+            while (true) {
+                try {
+                    sleep(getFreq());
+                    mover(cos, sen, calculaVelocidade()); // NÚMERO DE PIXELS PERCORRIDOS
 
-        calculaCatetos();
-        calculaParametros();
-        while (true) {
-            try {
-                sleep(getFreq());
-                mover(cos, sen, calculaVelocidade()); // NÚMERO DE PIXELS PERCORRIDOS
-
-                if (getContatoAlvo() || getContatoJanela()) {
-                    this.interrupt();
-                    System.out.println("****************");
-                    break;
+                    if (getContatoAlvo() || getContatoJanela()) {
+                        this.interrupt();
+                        break;
+                    }
+                } catch (InterruptedException | IOException e) {
+                    e.printStackTrace();
                 }
-            } catch (InterruptedException e) {
-                e.printStackTrace();
             }
+            dados.fechar();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 

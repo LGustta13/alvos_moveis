@@ -4,7 +4,3 @@ O game foi desenvolvido em JAVA no qual o objetivo é atingir alvos na tela a pa
 
 Nome: Luis Gustavo de Souza Oliveira
 email: luis.oliveira2@estudante.ufla.br
-
-### à fazer
-
-- Radar

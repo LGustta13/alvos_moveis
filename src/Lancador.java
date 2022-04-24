@@ -93,6 +93,7 @@ public class Lancador extends Thread {
 
                     while (tiro.isAlive()) {
                         if(this.getAlvo() !=null){
+                            // ASSOCIA O ALVO APONTADO PELO LANCADOR TAMBÉM AO TIRO
                             tiro.setAlvo(this.getAlvo());
                         }
                         if (tiro.isInterrupted()) {
