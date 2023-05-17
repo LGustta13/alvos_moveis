@@ -1,6 +1,5 @@
 ## Projeto realizado durante a disciplina de Automação Avançada.
 
-O game foi desenvolvido em JAVA no qual o objetivo é atingir alvos na tela a partir de um lançador.
+Projeto realizado durante a disciplina de Automação Avançada do curso de Engenharia de Controle e Automação. O objetivo foi desenvolver um jogo em JAVA buscando aplicar conceitos sobre reconciliação de dados, interfaces de usuário e programação paralela e concorrente.
 
-Nome: Luis Gustavo de Souza Oliveira
-email: luis.oliveira2@estudante.ufla.br
+O game foi desenvolvido em JAVA no qual o objetivo é atingir alvos na tela a partir de um lançador.
